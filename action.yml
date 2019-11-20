@@ -1,0 +1,30 @@
+name: 'Github action for deploying AWS Ampify project'
+description: 'This action builds and deploys your AWS Amplify project'
+inputs:
+  project_dir: 
+    description: 'the root project directory: use it if you amplify project is not this repo root directory'
+    required: false
+  source_dir: 
+    description: 'front-end source location where aws_exports.js will be generated'
+    required: false
+    default: 'src'
+  distribution_dir:
+    description: 'front-end artifacts deployment directory that gets uploaded to S3 during amplify publish'
+    required: false
+    default: 'dist'
+  build_command: 
+    description: 'a build command to run before amplify publish (to build front-end deployment artifacts)'
+    required: false
+    default: 'npm run build'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.project_dir }}
+    - ${{ inputs.source_dir }}
+    - ${{ inputs.distribution_dir }}
+    - ${{ inputs.build_command }}
+
+branding:
+  icon: 'git-commit'
+  color: 'orange'
