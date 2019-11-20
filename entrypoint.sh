@@ -8,7 +8,13 @@ if [ -z "$AWS_ACCESS_KEY_ID" ] && [ -z "$AWS_SECRET_ACCESS_KEY" ] ; then
 fi
 
 if [ -z "$AWS_DEFAULT_REGION" ] ; then
-  echo "You must provide AWS_DEFAULT_REGION in order to deploy"
+  echo "You must provide AWS_DEFAULT_REGION environment variable in order to deploy"
+  exit 1
+fi
+
+if [ -z "$6" ] ; then
+  echo "You must provide amplify_env input parameter in order to deploy"
+  exit 1
 fi
 
 # cd to project_dir if custom subfolder is specified
