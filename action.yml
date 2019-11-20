@@ -12,6 +12,9 @@ inputs:
     description: 'front-end artifacts deployment directory that gets uploaded to S3 during amplify publish'
     required: false
     default: 'dist'
+  amplify_env:
+    description: 'amplify environment to use'
+    required: true
   build_command: 
     description: 'a build command to run before amplify publish (to build front-end deployment artifacts)'
     required: false
@@ -29,6 +32,7 @@ runs:
     - ${{ inputs.distribution_dir }}
     - ${{ inputs.build_command }}
     - ${{ inputs.should_skip_npm_install }}
+    - ${{ inputs.amplify_env }}
 branding:
   icon: 'git-commit'
   color: 'orange'
