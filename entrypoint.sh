@@ -35,9 +35,9 @@ else
 fi
 
 FRONTENDCONFIG="{\
-\"SourceDir\":$2,\
-\"DistributionDir\":$3,\
-\"BuildCommand\":$4,\
+\"SourceDir\":\"$2\",\
+\"DistributionDir\":\"$3\",\
+\"BuildCommand\":\"$4\",\
 \"StartCommand\":\"npm run-script start\"\
 }"
 
@@ -45,9 +45,9 @@ AWSCLOUDFORMATIONCONFIG="{\
 \"configLevel\":\"project\",\
 \"useProfile\":true,\
 \"profileName\":\"default\",\
-\"accessKeyId\":$AWS_ACCESS_KEY_ID,\
-\"secretAccessKey\":$AWS_SECRET_ACCESS_KEY,\
-\"region\":$AWS_DEFAULT_REGION\
+\"accessKeyId\":\"$AWS_ACCESS_KEY_ID\",\
+\"secretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\",\
+\"region\":\"$AWS_DEFAULT_REGION\"\
 }"
 
 AMPLIFY="{\
