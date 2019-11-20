@@ -16,6 +16,10 @@ inputs:
     description: 'a build command to run before amplify publish (to build front-end deployment artifacts)'
     required: false
     default: 'npm run build'
+  should_skip_npm_install:
+    description: 'set this if you want to skip npm install that runs in the beginning here'
+    required: true
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -24,7 +28,7 @@ runs:
     - ${{ inputs.source_dir }}
     - ${{ inputs.distribution_dir }}
     - ${{ inputs.build_command }}
-
+    - ${{ inputs.should_skip_npm_install }}
 branding:
   icon: 'git-commit'
   color: 'orange'
