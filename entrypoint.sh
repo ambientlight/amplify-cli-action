@@ -7,8 +7,8 @@ if [ -z "$AWS_ACCESS_KEY_ID" ] && [ -z "$AWS_SECRET_ACCESS_KEY" ] ; then
   exit 1
 fi
 
-if [ -z "$AWS_DEFAULT_REGION" ] ; then
-  echo "You must provide AWS_DEFAULT_REGION environment variable in order to deploy"
+if [ -z "$AWS_REGION" ] ; then
+  echo "You must provide AWS_REGION environment variable in order to deploy"
   exit 1
 fi
 
