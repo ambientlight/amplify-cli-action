@@ -47,7 +47,7 @@ AWSCLOUDFORMATIONCONFIG="{\
 \"profileName\":\"default\",\
 \"accessKeyId\":\"$AWS_ACCESS_KEY_ID\",\
 \"secretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\",\
-\"region\":\"$AWS_DEFAULT_REGION\"\
+\"region\":\"$AWS_REGION\"\
 }"
 
 AMPLIFY="{\
