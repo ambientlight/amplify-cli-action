@@ -34,11 +34,11 @@ amplify_configure () {
   # this is required in addition to configure project for env to work
   echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"'$6'"}' > ./amplify/.config/local-env-info.json
 
-  amplify configure project \
-  --amplify "$AMPLIFY" \
-  --frontend "$FRONTEND" \
-  --providers "$PROVIDERS" \
+  echo $AMPLIFY
+  echo $FRONTEND
+  echo $PROVIDERS
 
+  amplify configure project --amplify "$AMPLIFY" --frontend "$FRONTEND" --providers "$PROVIDERS" --yes
   amplify env pull --yes
   amplify status
 }
