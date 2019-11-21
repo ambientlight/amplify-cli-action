@@ -1,7 +1,7 @@
 #!/bin/sh -l
 
 amplify_configure () {
-  RONTENDCONFIG="{\
+  FRONTENDCONFIG="{\
   \"SourceDir\":\"$2\",\
   \"DistributionDir\":\"$3\",\
   \"BuildCommand\":\"$4\",\
@@ -52,7 +52,7 @@ amplify_delete () {
 
   # ACCIDENTAL DELETION PROTECTION #1: environment to be deleted cannot contain prod/release/master in its name
   if [[ "$6" =~ prod|release|master ]] ; then
-    echo "ACCIDENTAL DELETION PROTECTION: delete command is unsupported for environments that contain prod/release/master"
+    echo "ACCIDENTAL DELETION PROTECTION: delete command is unsupported for environments that contain prod/release/master in its name"
     exit 1
   fi
 
