@@ -1,5 +1,47 @@
 #!/bin/sh -l
 
+set -e
+
+if [ -z "$AWS_ACCESS_KEY_ID" ] && [ -z "$AWS_SECRET_ACCESS_KEY" ] ; then
+  echo "You must provide the action with both AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables in order to deploy"
+  exit 1
+fi
+
+if [ -z "$AWS_REGION" ] ; then
+  echo "You must provide AWS_REGION environment variable in order to deploy"
+  exit 1
+fi
+
+if [ -z "$5" ] ; then
+  echo "You must provide amplify_command input parameter in order to deploy"
+  exit 1
+fi
+
+if [ -z "$6" ] ; then
+  echo "You must provide amplify_env input parameter in order to deploy"
+  exit 1
+fi
+
+# cd to project_dir if custom subfolder is specified
+if [ -n "$1" ] ; then
+  cd "$1"
+fi
+
+# if amplify if available at path, do nothing, 
+# otherwise check if it is not installed as project local dependency, 
+# otherwise install globally latest npm version
+if [ -x "$(command -v amplify)" ] ; then
+  echo "using amplify available at PATH"
+elif [ ! -f ./node_modules/.bin/amplify ] ; then
+  echo "amplify has not been found at PATH or as local npm dependency. Installing amplify globally..."
+  npm install -g @aws-amplify/cli
+else 
+  echo "using local project dependency amplify"
+  PATH="$PATH:$(pwd)/node_modules/.bin"
+fi
+
+echo "amplify version $(amplify --version)"
+
 amplify_configure () {
   FRONTENDCONFIG="{\
   \"SourceDir\":\"$2\",\
@@ -58,48 +100,6 @@ amplify_delete () {
 
   echo "Y" | amplify delete
 }
-
-set -e
-
-if [ -z "$AWS_ACCESS_KEY_ID" ] && [ -z "$AWS_SECRET_ACCESS_KEY" ] ; then
-  echo "You must provide the action with both AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables in order to deploy"
-  exit 1
-fi
-
-if [ -z "$AWS_REGION" ] ; then
-  echo "You must provide AWS_REGION environment variable in order to deploy"
-  exit 1
-fi
-
-if [ -z "$5" ] ; then
-  echo "You must provide amplify_command input parameter in order to deploy"
-  exit 1
-fi
-
-if [ -z "$6" ] ; then
-  echo "You must provide amplify_env input parameter in order to deploy"
-  exit 1
-fi
-
-# cd to project_dir if custom subfolder is specified
-if [ -n "$1" ] ; then
-  cd "$1"
-fi
-
-# if amplify if available at path, do nothing, 
-# otherwise check if it is not installed as project local dependency, 
-# otherwise install globally latest npm version
-if [ -x "$(command -v amplify)" ] ; then
-  echo "using amplify available at PATH"
-elif [ ! -f ./node_modules/.bin/amplify ] ; then
-  echo "amplify has not been found at PATH or as local npm dependency. Installing amplify globally..."
-  npm install -g @aws-amplify/cli
-else 
-  echo "using local project dependency amplify"
-  PATH="$PATH:$(pwd)/node_modules/.bin"
-fi
-
-echo "amplify version $(amplify --version)"
 
 case $5 in
 
