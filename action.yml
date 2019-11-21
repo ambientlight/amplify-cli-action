@@ -23,9 +23,9 @@ inputs:
     description: 'amplify command: SUPPORTED: [configure, push, publish, delete, status]'
     required: true
   delete_lock:
-    description: 'delete protection: explicitly set this to true if you want amplify delete to work'
+    description: 'delete protection: explicitly set this to false if you want amplify delete to work'
     required: false
-    default: false
+    default: true
 runs:
   using: 'docker'
   image: 'Dockerfile'

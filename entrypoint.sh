@@ -45,8 +45,8 @@ amplify_configure () {
 
 amplify_delete () {
   # ACCIDENTAL DELETION PROTECTION #0: delete_lock
-  if [ "$7" = false ] ; then
-    echo "ACCIDENTAL DELETION PROTECTION: You must set delete_lock input parameter for delete to work"
+  if [ "$7" = true ] ; then
+    echo "ACCIDENTAL DELETION PROTECTION: You must unset delete_lock input parameter for delete to work"
     exit 1
   fi
 
