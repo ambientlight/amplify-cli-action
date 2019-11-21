@@ -42,70 +42,7 @@ fi
 
 echo "amplify version $(amplify --version)"
 
-amplify_configure () {
-  FRONTENDCONFIG="{\
-  \"SourceDir\":\"$2\",\
-  \"DistributionDir\":\"$3\",\
-  \"BuildCommand\":\"$4\",\
-  \"StartCommand\":\"npm run-script start\"\
-  }"
-
-  AWSCLOUDFORMATIONCONFIG="{\
-  \"configLevel\":\"project\",\
-  \"useProfile\":false,\
-  \"accessKeyId\":\"$AWS_ACCESS_KEY_ID\",\
-  \"secretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\",\
-  \"region\":\"$AWS_REGION\"\
-  }"
-
-  AMPLIFY="{\
-  \"projectName\":\"github actions CI\",\
-  \"defaultEditor\":\"code\"\
-  }"
-
-  FRONTEND="{\
-  \"frontend\":\"javascript\",\
-  \"framework\":\"none\",\
-  \"config\":$FRONTENDCONFIG\
-  }"
-
-  PROVIDERS="{\
-  \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
-  }"
-
-  # this is required in addition to configure project for env to work
-  echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"'$6'"}' > ./amplify/.config/local-env-info.json
-
-  echo $AMPLIFY
-  echo $FRONTEND
-  echo $PROVIDERS
-
-  amplify configure project --amplify "$AMPLIFY" --frontend "$FRONTEND" --providers "$PROVIDERS" --yes
-  amplify env pull --yes
-  amplify status
-}
-
-amplify_delete () {
-  # ACCIDENTAL DELETION PROTECTION #0: delete_lock
-  if [ "$7" = true ] ; then
-    echo "ACCIDENTAL DELETION PROTECTION: You must unset delete_lock input parameter for delete to work"
-    exit 1
-  fi
-
-  # ACCIDENTAL DELETION PROTECTION #1: environment to be deleted cannot contain prod/release/master in its name
-  if [[ "$6" =~ prod|release|master ]] ; then
-    echo "ACCIDENTAL DELETION PROTECTION: delete command is unsupported for environments that contain prod/release/master in its name"
-    exit 1
-  fi
-
-  echo "Y" | amplify delete
-}
-
 case $5 in
-
-  configure)
-    amplify_configure
-    ;;
 
   push)
     amplify push --yes
@@ -119,8 +56,63 @@ case $5 in
     amplify status
     ;;
 
+  configure)
+    FRONTENDCONFIG="{\
+    \"SourceDir\":\"$2\",\
+    \"DistributionDir\":\"$3\",\
+    \"BuildCommand\":\"$4\",\
+    \"StartCommand\":\"npm run-script start\"\
+    }"
+
+    AWSCLOUDFORMATIONCONFIG="{\
+    \"configLevel\":\"project\",\
+    \"useProfile\":false,\
+    \"accessKeyId\":\"$AWS_ACCESS_KEY_ID\",\
+    \"secretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\",\
+    \"region\":\"$AWS_REGION\"\
+    }"
+
+    AMPLIFY="{\
+    \"projectName\":\"github actions CI\",\
+    \"defaultEditor\":\"code\"\
+    }"
+
+    FRONTEND="{\
+    \"frontend\":\"javascript\",\
+    \"framework\":\"none\",\
+    \"config\":$FRONTENDCONFIG\
+    }"
+
+    PROVIDERS="{\
+    \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
+    }"
+
+    # this is required in addition to configure project for env to work
+    echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"'$6'"}' > ./amplify/.config/local-env-info.json
+
+    echo $AMPLIFY
+    echo $FRONTEND
+    echo $PROVIDERS
+
+    amplify configure project --amplify "$AMPLIFY" --frontend "$FRONTEND" --providers "$PROVIDERS" --yes
+    amplify env pull --yes
+    amplify status
+    ;;
+
   delete)
-    amplify_delete
+    # ACCIDENTAL DELETION PROTECTION #0: delete_lock
+    if [ "$7" = true ] ; then
+      echo "ACCIDENTAL DELETION PROTECTION: You must unset delete_lock input parameter for delete to work"
+      exit 1
+    fi
+
+    # ACCIDENTAL DELETION PROTECTION #1: environment to be deleted cannot contain prod/release/master in its name
+    if [[ "$6" =~ prod|release|master ]] ; then
+      echo "ACCIDENTAL DELETION PROTECTION: delete command is unsupported for environments that contain prod/release/master in its name"
+      exit 1
+    fi
+
+    echo "Y" | amplify delete
     ;;
 
   *)
