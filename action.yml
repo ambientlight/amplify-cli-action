@@ -20,7 +20,7 @@ inputs:
     description: 'amplify environment to use'
     required: true
   amplify_command:
-    description: 'amplify command: SUPPORTED: [configure, push, publish, status, delete_env]'
+    description: 'amplify command: SUPPORTED: [configure, push, publish, status, add_env, delete_env]'
     required: true
   delete_lock:
     description: 'delete protection: explicitly set this to false if you want amplify delete to work'

@@ -103,6 +103,27 @@ case $5 in
     amplify status
     ;;
 
+  add_env)
+    AMPLIFY="{\
+    \"envName\":\"$6\"\
+    }"
+
+    AWSCLOUDFORMATIONCONFIG="{\
+    \"configLevel\":\"project\",\
+    \"useProfile\":false,\
+    \"accessKeyId\":\"$AWS_ACCESS_KEY_ID\",\
+    \"secretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\",\
+    \"region\":\"$AWS_REGION\"\
+    }"
+
+    PROVIDERS="{\
+    \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
+    }"
+
+    amplify-dev env add --amplify "$AMPLIFY" --providers $PROVIDERS --yes
+    amplify status
+    ;;
+
   delete_env)
     # ACCIDENTAL DELETION PROTECTION #0: delete_lock
     if [ "$7" = true ] ; then
