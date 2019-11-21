@@ -90,16 +90,20 @@ case $5 in
     # this is required in addition to configure project for env to work
     echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"'$6'"}' > ./amplify/.config/local-env-info.json
 
-    echo $AMPLIFY
-    echo $FRONTEND
-    echo $PROVIDERS
-
     amplify configure project --amplify "$AMPLIFY" --frontend "$FRONTEND" --providers "$PROVIDERS" --yes
-    amplify env pull --yes
+
+    # if environment doesn't exist create a new one
+    if [[ -z $(amplify env get --name "$6" | grep "No environment found") ]] ; then 
+      echo "$6 environment does not yet exist"
+    else 
+      echo "found existing environment $6"
+      amplify env pull --yes
+    fi
+    
     amplify status
     ;;
 
-  delete)
+  delete_env)
     # ACCIDENTAL DELETION PROTECTION #0: delete_lock
     if [ "$7" = true ] ; then
       echo "ACCIDENTAL DELETION PROTECTION: You must unset delete_lock input parameter for delete to work"
@@ -112,11 +116,11 @@ case $5 in
       exit 1
     fi
 
-    echo "Y" | amplify delete
+    echo "Y" | amplify env remove "$6"
     ;;
 
   *)
-    echo "amplify command ${5} is invalid or not supported"
+    echo "amplify command $5 is invalid or not supported"
     exit 1
     ;;
 esac
