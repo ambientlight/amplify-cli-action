@@ -94,10 +94,11 @@ case $5 in
 
     # if environment doesn't exist create a new one
     if [ -z "$(amplify env get --name $6 | grep 'No environment found')" ] ; then  
-      echo "$6 environment does not yet exist"
-    else 
       echo "found existing environment $6"
       amplify env pull --yes
+    else
+      echo "$6 environment does not exist, consider using add_env command instead";
+      exit 1
     fi
     
     amplify status
@@ -120,7 +121,7 @@ case $5 in
     \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
     }"
 
-    amplify-dev env add --amplify "$AMPLIFY" --providers $PROVIDERS --yes
+    amplify env add --amplify "$AMPLIFY" --providers $PROVIDERS --yes
     amplify status
     ;;
 
