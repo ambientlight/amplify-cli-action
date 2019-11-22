@@ -22,14 +22,14 @@ inputs:
   amplify_command:
     description: 'amplify command: SUPPORTED: [configure, push, publish, status, add_env, delete_env]'
     required: true
+  amplify_version:
+    description: 'version of amplify/cli used'
+    required: false
+    default: 'latest'
   delete_lock:
     description: 'delete protection: explicitly set this to false if you want amplify delete to work'
     required: false
     default: true
-  amplify_cli_version: 'version of amplify cli used'
-    description: 'version of amplify/cli used'
-    required: false
-    default: 'latest'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -41,7 +41,7 @@ runs:
     - ${{ inputs.amplify_command }}
     - ${{ inputs.amplify_env }}
     - ${{ inputs.delete_lock }}
-    - ${{ inputs.amplify_cli_version }}
+    - ${{ inputs.amplify_version }}
 branding:
   icon: 'git-commit'
   color: 'orange'
