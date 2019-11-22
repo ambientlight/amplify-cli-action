@@ -138,6 +138,8 @@ case $5 in
       exit 1
     fi
 
+    # test env removal
+    amplify env checkout euprod
     echo "Y" | amplify env remove "$6"
     ;;
 
