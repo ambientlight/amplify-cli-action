@@ -138,8 +138,9 @@ case $5 in
       exit 1
     fi
 
-    # test env removal
-    amplify env checkout euprod
+    # fill in dummy env in local-env-info so we delete current environment
+    # without switch to another one (amplify restriction) 
+    echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"dummyenvfordeletecurrentowork"}' > ./amplify/.config/local-env-info.json
     echo "Y" | amplify env remove "$6"
     ;;
 
