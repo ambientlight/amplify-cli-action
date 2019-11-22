@@ -29,7 +29,7 @@ inputs:
   amplify_cli_version: 'version of amplify cli used'
     description: 'version of amplify/cli used'
     required: false
-    default: "latest"
+    default: 'latest'
 runs:
   using: 'docker'
   image: 'Dockerfile'
