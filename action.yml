@@ -22,7 +22,7 @@ inputs:
   amplify_command:
     description: 'amplify command: SUPPORTED: [configure, push, publish, status, add_env, delete_env]'
     required: true
-  amplify_version:
+  amplify_cli_version:
     description: 'version of amplify/cli used'
     required: false
     default: 'latest'
@@ -41,7 +41,7 @@ runs:
     - ${{ inputs.amplify_command }}
     - ${{ inputs.amplify_env }}
     - ${{ inputs.delete_lock }}
-    - ${{ inputs.amplify_version }}
+    - ${{ inputs.amplify_cli_version }}
 branding:
   icon: 'git-commit'
   color: 'orange'
