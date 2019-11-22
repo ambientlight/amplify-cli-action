@@ -32,12 +32,14 @@ fi
 # otherwise install globally latest npm version
 if [ -x "$(command -v amplify)" ] ; then
   echo "using amplify available at PATH"
-elif [ ! -f ./node_modules/.bin/amplify ] ; then
+# elif [ ! -f ./node_modules/.bin/amplify ] ; then
+else
   echo "amplify has not been found at PATH or as local npm dependency. Installing amplify globally..."
   npm install -g @aws-amplify/cli@3.17.1-alpha.35
-else 
-  echo "using local project dependency amplify"
-  PATH="$PATH:$(pwd)/node_modules/.bin"
+# FIXME: extremely weird: using local dep amplify-cli bugs with awscloudformation provider: with using provider underfined
+# else 
+#   echo "using local project dependency amplify"
+#   PATH="$PATH:$(pwd)/node_modules/.bin"
 fi
 
 echo "amplify version $(amplify --version)"
