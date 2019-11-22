@@ -121,9 +121,6 @@ case $5 in
     \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
     }"
 
-    echo $AMPLIFY
-    echo $PROVIDERS
-
     amplify env add --amplify "$AMPLIFY" --providers "$PROVIDERS" --yes
     amplify status
     ;;
