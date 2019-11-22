@@ -26,6 +26,10 @@ inputs:
     description: 'delete protection: explicitly set this to false if you want amplify delete to work'
     required: false
     default: true
+  amplify_cli_version: 'version of amplify cli used'
+    description: 'version of amplify/cli used'
+    required: false
+    default: "latest"
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -37,6 +41,7 @@ runs:
     - ${{ inputs.amplify_command }}
     - ${{ inputs.amplify_env }}
     - ${{ inputs.delete_lock }}
+    - ${{ inputs.amplify_cli_version }}
 branding:
   icon: 'git-commit'
   color: 'orange'

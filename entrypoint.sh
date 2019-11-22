@@ -30,12 +30,12 @@ fi
 # if amplify if available at path, do nothing, 
 # otherwise check if it is not installed as project local dependency, 
 # otherwise install globally latest npm version
-if [ -x "$(command -v amplify)" ] ; then
+if which amplify >/dev/null ; then
   echo "using amplify available at PATH"
 # elif [ ! -f ./node_modules/.bin/amplify ] ; then
 else
   echo "amplify has not been found at PATH or as local npm dependency. Installing amplify globally..."
-  npm install -g @aws-amplify/cli@3.17.1-alpha.35
+  npm install -g @aws-amplify/cli@${8}
 # FIXME: extremely weird: using local dep amplify-cli bugs with awscloudformation provider: with using provider underfined
 # else 
 #   echo "using local project dependency amplify"
@@ -135,7 +135,7 @@ case $5 in
     fi
 
     # ACCIDENTAL DELETION PROTECTION #1: environment to be deleted cannot contain prod/release/master in its name
-    if [[ "$6" =~ prod|release|master ]] ; then
+    if [[ ${6,,} =~ prod|release|master ]] ; then
       echo "ACCIDENTAL DELETION PROTECTION: delete command is unsupported for environments that contain prod/release/master in its name"
       exit 1
     fi
