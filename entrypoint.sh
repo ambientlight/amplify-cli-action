@@ -93,7 +93,7 @@ case $5 in
     amplify configure project --amplify "$AMPLIFY" --frontend "$FRONTEND" --providers "$PROVIDERS" --yes
 
     # if environment doesn't exist create a new one
-    if [[ -z $(amplify env get --name "$6" | grep "No environment found") ]] ; then 
+    if [ -z "$(amplify env get --name $6 | grep 'No environment found')" ] ; then  
       echo "$6 environment does not yet exist"
     else 
       echo "found existing environment $6"
