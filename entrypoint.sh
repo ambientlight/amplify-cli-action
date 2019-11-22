@@ -34,7 +34,7 @@ if [ -x "$(command -v amplify)" ] ; then
   echo "using amplify available at PATH"
 elif [ ! -f ./node_modules/.bin/amplify ] ; then
   echo "amplify has not been found at PATH or as local npm dependency. Installing amplify globally..."
-  npm install -g @aws-amplify/cli
+  npm install -g @aws-amplify/cli@3.17.1-alpha.35
 else 
   echo "using local project dependency amplify"
   PATH="$PATH:$(pwd)/node_modules/.bin"
