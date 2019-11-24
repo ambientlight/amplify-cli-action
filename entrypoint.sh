@@ -29,7 +29,7 @@ fi
 
 # if amplify if available at path, do nothing, 
 # otherwise install globally latest npm version
-# FIXME: extremely weird: using local dep amplify-cli bugs with awscloudformation provider: with using provider underfined
+# FIXME: weird: using local dep amplify-cli bugs with awscloudformation provider: with using provider underfined
 if [[ -z $(which amplify) ]] ; then
   echo "amplify has not been found at PATH or as local npm dependency. Installing amplify globally..."
   npm install -g @aws-amplify/cli@${8}
