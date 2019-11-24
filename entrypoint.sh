@@ -30,7 +30,7 @@ fi
 # if amplify if available at path and custom amplify version is unspecified, do nothing, 
 # otherwise install globally latest npm version
 # FIXME: weird: using local dep amplify-cli bugs with awscloudformation provider: with using provider underfined
-if [[ -z $(which amplify) ]] && [[ -n "$8"]] ; then
+if [[ -z $(which amplify) && -n "$8"]] ; then
   echo "Installing amplify globaly"
   npm install -g @aws-amplify/cli@${8}
 # elif [ ! -f ./node_modules/.bin/amplify ] ; then
