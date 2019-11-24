@@ -55,7 +55,84 @@ jobs:
 ```
 
 ## Configuration
-You are required to provide `amplify_command` and `amplify_env` input parameters ([with](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepswith) section of your workflow) as well as **AWS_ACCESS_KEY_ID**,  **AWS_SECRET_ACCESS_KEY**, **AWS_REGION** environment variables that should be stored as repo secrets. You can learn more about setting environment variables with Github action [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsenv).
+You are required to provide `amplify_command` and `amplify_env` input parameters ([with](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepswith) section of your workflow) as well as AWS credentials and aws region: **AWS_ACCESS_KEY_ID**,  **AWS_SECRET_ACCESS_KEY**, **AWS_REGION** environment variables that should be stored as repo secrets. You can learn more about setting environment variables with Github action [here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/workflow-syntax-for-github-actions#jobsjob_idstepsenv).
+
+## AWS Credentials: Controlling Access with IAM
+I would personally discourage using `AdministratorAccess` IAM policy or root account credentials for **AWS_ACCESS_KEY_ID**,  **AWS_SECRET_ACCESS_KEY** here. Instead, consider creating a designated AWS IAM user for this step with permissions restricted to AWS resources associated with amplify category resources used. This can get tricky since in addition to AWS CloudFormation permissions, IAM user who creates or delete stacks require additional permissions that depends on the stack templates. For example, if you have a template that describes an Amazon DynamoDB Table (in amplify storage category), IAM user must have the corresponding permissions for Amazon DynamoDB actions to successfully create the stack. Nonetheless, next steps guide you through creation of IAM user for this step.
+
+1. Navigate to [AWS Identity and Access Management console](https://console.aws.amazon.com/iam/home)
+2. Under Users -> `Add New User`. Fill in the user name(`GithubCI`) and set `Programmatic Access` for **Access type**.
+3. In permissions, select `Create a new group`, in a dropdown select `Create policy`.
+4. In a policy creation menu, select `JSON` tab and fill it with a next policy statement, then hit review and save:
+  ```json
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:CreateUploadBucket",
+                "cloudformation:DescribeStackResource",
+                "cloudformation:UpdateStackSet",
+                "cloudformation:DescribeStackEvents",
+                "cloudformation:UpdateStack",
+                "cloudformation:CreateStackSet",
+                "cloudformation:DescribeStackResources",
+                "cloudformation:DeleteStackSet",
+                "cloudformation:DescribeStacks",
+                "cloudformation:CreateStack",
+                "cloudformation:DeleteStack"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateRole",
+                "iam:GetRole",
+                "iam:PassRole",
+                "iam:PutRolePolicy",
+                "iam:GetPolicy",
+                "iam:DeleteRole",
+                "iam:DeleteRolePolicy",
+                "iam:CreatePolicy",
+                "iam:UpdateRole",
+                "iam:GetRolePolicy"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:CreateBucket",
+                "s3:PutObject",
+                "s3:GetObject"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:*",
+                "cloudfront:*",
+                "cognito-identity:*",
+                "s3:*",
+                "appsync:*",
+                "lambda:*",
+                "cognito-idp:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+  }
+  ```
+
+  The first 3 policy statement blocks contain neccessary IAM permissions for Amplify CloudFormation deployments to work, while the last one contains permissions corresponding to AWS resources that are commonly used in Amplify (as an example): `auth`, `api`, `hosting`, `storage`, `function`. You will most likely **NEED TO ADD** more permissions corresponding to other resources used in your project. Please note above policy statement is quite permissive, you can further constraint it down to specific service actions, but this can be a bit annoying as it is not clear and obvious what permissions you will need for a given amplify category resource, most likely you will find yourself iteratively deploying while tweaking IAM permissions until deployment succeeds.
+
+5. In the previous page group creation dropdown, find a newly created policy in the list, add a name (`AmplifyDeploy`) and click on Create Group.
+6. Select a newly created group for this new user, click through the other steps and finish creating a new user.
+7. Copy the access key and secret access key into your github repository Secrets (in repo's Settings) as **AWS_ACCESS_KEY_ID**,  **AWS_SECRET_ACCESS_KEY**.
+8. You can also learn more at [Controlling Access with AWS Identity and Access Management](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html)
 
 ## Commands
 
@@ -93,9 +170,9 @@ Creates and initialized a new amplify environment. You would likely need this if
 ### delete_env
 **required parameters**: `amplify_env, delete_lock`
 
-Undeploys cloudformation stack(removes all resources) for a selected amplify environment. To prevent accidental deletion, you are required to explicitly set `delete_lock` input parameter with `false`. For the same reason, this step will fail if you try running it on the enivonment with name containing `prod/release/master`. 
+Undeploys cloudformation stack(removes all resources) for a selected amplify environment. To prevent accidental deletion, you are required to explicitly set [delete_lock](#delete_lock) input parameter with `false`. For the same reason, this step will fail if you try running it on the enivonment with name containing `prod/release/master`. 
 
-**Note #0**: results in leftover amplify environment S3 bucket since `amplify env delete` won't remove this S3 bucket. (this will not affect repeated population of the environment with the same name as new population will create an S3 bucket with different name)  
+**Note #0**: results in leftover amplify environment S3 bucket since `amplify env delete` won't remove this S3 bucket. (this will not affect repeated population of the environment with the same name as new population will create S3 bucket with different name)  
 **Note #1**: repeated population of environment with the same name **WILL FAIL** with `resource already exists` exception if you repeatedly populate the environment that you have undeployed previously **WHEN** you are using storage category in your project and its CF `AWS::S3::Bucket` resource has **Retain** `DeletionPolicy`, since `delete_env` step won't remove such S3 bucket.  
 **Note #2**: may take significant time if you are utilizing `AWS CloudFront` in your hosting category.
 
@@ -106,41 +183,41 @@ Undeploys cloudformation stack(removes all resources) for a selected amplify env
 Name of amplify environment used in this step.
 
 ### amplify_cli_version
-**type**: string  
+**type**: `string`  
 **required** `NO`
 
 Use custom amplify version instead of latest stable (npm's `@latest`) when parameter is not specified.
 
 ### project_dir
-**type**: string  
+**type**: `string`  
 **required**: `NO`
 
 the root amplify project directory (contains `/amplify`): use it if you amplify project is not this repo root directory.
 
 ### source_dir
-**type**: string  
+**type**: `string`  
 **required**: `NO`  
 **default**: **src**
 
-front-end source location where aws_exports.js will be generated
+front-end source location where `aws_exports.js` will be generated
 
 ### distribution_dir
-**type**: string
+**type**: `string`
 **required**: `NO`  
 **default**: **dist**
 
 front-end artifacts deployment directory that gets uploaded to S3 during amplify publish if hosting category is used in the project
 
 ### build_command
-**type**: string  
+**type**: `string`  
 **required**: `NO`  
 **default**: `npm run build`
 
 a build command to run with amplify publish (to build front-end deployment artifacts)
 
 ### delete_lock
-**type**: bool  
+**type**: `bool`  
 **required** `YES` for `delete_env` amplify_command  
 **default**: true
 
-deletion protection: explicitly set this to false if you want amplify delete to work
+deletion protection: explicitly set this to false if you want `delete_env` step to work.
