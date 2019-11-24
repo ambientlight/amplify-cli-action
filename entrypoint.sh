@@ -27,18 +27,19 @@ if [ -n "$1" ] ; then
   cd "$1"
 fi
 
-which amplify
+# few tests
+ls /opt/hostedtoolcache/node/10.17.0/x64/bin/
 
 # if amplify if available at path, do nothing, 
-# otherwise check if it is not installed as project local dependency, 
 # otherwise install globally latest npm version
-if which amplify >/dev/null ; then
-  echo "using amplify available at PATH"
-# elif [ ! -f ./node_modules/.bin/amplify ] ; then
-else
+# FIXME: extremely weird: using local dep amplify-cli bugs with awscloudformation provider: with using provider underfined
+if [[ -z $(which amplify) ]] ; then
   echo "amplify has not been found at PATH or as local npm dependency. Installing amplify globally..."
   npm install -g @aws-amplify/cli@${8}
-# FIXME: extremely weird: using local dep amplify-cli bugs with awscloudformation provider: with using provider underfined
+# elif [ ! -f ./node_modules/.bin/amplify ] ; then
+else
+  echo "using amplify available at PATH"
+  which amplify
 # else 
 #   echo "using local project dependency amplify"
 #   PATH="$PATH:$(pwd)/node_modules/.bin"
