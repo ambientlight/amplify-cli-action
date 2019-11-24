@@ -27,6 +27,8 @@ if [ -n "$1" ] ; then
   cd "$1"
 fi
 
+which amplify
+
 # if amplify if available at path, do nothing, 
 # otherwise check if it is not installed as project local dependency, 
 # otherwise install globally latest npm version
