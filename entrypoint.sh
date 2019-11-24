@@ -27,21 +27,21 @@ if [ -n "$1" ] ; then
   cd "$1"
 fi
 
-# if amplify if available at path, do nothing, 
+# if amplify if available at path and custom amplify version is unspecified, do nothing, 
 # otherwise install globally latest npm version
 # FIXME: weird: using local dep amplify-cli bugs with awscloudformation provider: with using provider underfined
-if [[ -z $(which amplify) ]] ; then
-  echo "amplify has not been found at PATH or as local npm dependency. Installing amplify globally..."
+if [[ -z $(which amplify) ]] && [[ -n "$8"]] ; then
+  echo "Installing amplify globaly"
   npm install -g @aws-amplify/cli@${8}
 # elif [ ! -f ./node_modules/.bin/amplify ] ; then
 else
   echo "using amplify available at PATH"
-  which amplify
 # else 
 #   echo "using local project dependency amplify"
 #   PATH="$PATH:$(pwd)/node_modules/.bin"
 fi
 
+which amplify
 echo "amplify version $(amplify --version)"
 
 case $5 in

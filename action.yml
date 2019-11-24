@@ -25,7 +25,6 @@ inputs:
   amplify_cli_version:
     description: 'version of amplify/cli used'
     required: false
-    default: 'latest'
   delete_lock:
     description: 'delete protection: explicitly set this to false if you want amplify delete to work'
     required: false
