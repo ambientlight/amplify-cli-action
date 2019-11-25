@@ -1,4 +1,4 @@
-## amplify-cli-action
+# amplify-cli-action
 🚀 :octocat: AWS Amplify CLI support for github actions. This action supports configuring and deploying your project to AWS as well as creating and undeploying amplify environments.
 
 ## Getting Started
@@ -181,46 +181,46 @@ Undeploys cloudformation stack(removes all resources) for a selected amplify env
 **Note #1**: repeated population of environment with the same name **WILL FAIL** with `resource already exists` exception if you repeatedly populate the environment that you have undeployed previously **WHEN** you are using storage category in your project and its CF `AWS::S3::Bucket` resource has **Retain** `DeletionPolicy`, since `delete_env` step won't remove such S3 bucket.  
 **Note #2**: may take significant time if you are utilizing `AWS CloudFront` in your hosting category.
 
-### amplify_env
+#### amplify_env
 **type**: `string`  
 **required**: `YES` for amplify_commands: `configure, add_env, delete_env`.
 
 Name of amplify environment used in this step.
 
-### amplify_cli_version
+#### amplify_cli_version
 **type**: `string`  
 **required** `NO`
 
 Use custom amplify version instead of latest stable (npm's `@latest`) when parameter is not specified.
 
-### project_dir
+#### project_dir
 **type**: `string`  
 **required**: `NO`
 
 the root amplify project directory (contains `/amplify`): use it if you amplify project is not this repo root directory.
 
-### source_dir
+#### source_dir
 **type**: `string`  
 **required**: `NO`  
 **default**: **src**
 
 front-end source location where `aws_exports.js` will be generated
 
-### distribution_dir
+#### distribution_dir
 **type**: `string`  
 **required**: `NO`  
 **default**: **dist**
 
 front-end artifacts deployment directory that gets uploaded to S3 during amplify publish if hosting category is used in the project
 
-### build_command
+#### build_command
 **type**: `string`  
 **required**: `NO`  
 **default**: `npm run build`
 
 a build command to run with amplify publish (to build front-end deployment artifacts)
 
-### delete_lock
+#### delete_lock
 **type**: `bool`  
 **required** `YES` for `delete_env` amplify_command  
 **default**: true
