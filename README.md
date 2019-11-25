@@ -127,7 +127,7 @@ I would personally discourage using `AdministratorAccess` IAM policy or root acc
   }
   ```
 
-  The first 3 policy statement blocks contain neccessary IAM permissions for Amplify CloudFormation deployments to work, while the last one contains permissions corresponding to AWS resources that are commonly used in Amplify (as an example): `auth`, `api`, `hosting`, `storage`, `function`. You will most likely **NEED TO ADD** more permissions corresponding to other resources used in your project. Please note above policy statement is quite permissive, you can further constraint it down to specific service actions, but this can be a bit annoying as it is not clear and obvious what permissions you will need for a given amplify category resource, most likely you will find yourself iteratively deploying while tweaking IAM permissions until deployment succeeds.
+  The first 3 policy statement blocks contain neccessary IAM permissions for Amplify CloudFormation deployments to work, while the last one contains permissions corresponding to AWS resources that are commonly used in Amplify (as an example): `auth`, `api`, `hosting`, `storage`, `function`. You will most likely **NEED TO ADD** more permissions corresponding to other resources used in your project. You may further constraint it down to specific service actions, but this can be a bit annoying as it is not clear and obvious what permissions you will need for a given amplify category resource, most likely you will find yourself iteratively deploying while tweaking IAM permissions until deployment succeeds.
 
 5. In the previous page group creation dropdown, find a newly created policy in the list, add a name (`AmplifyDeploy`) and click on Create Group.
 6. Select a newly created group for this new user, click through the other steps and finish creating a new user.
@@ -167,7 +167,7 @@ Creates and initialized a new amplify environment. You would likely need this if
 **Note #1**: **WILL FAIL** with `resource already exists` exception if you repeatedly populate the environment that you have undeployed previously **WHEN** you are using storage category in your project and its CF `AWS::S3::Bucket` resource has **Retain** `DeletionPolicy`, since `delete_env` step won't remove such S3 bucket.  
 **Note #2**: may take significant time if you are utilizing `AWS CloudFront` in your hosting category.
 
-### delete_env
+#### delete_env
 **required parameters**: `amplify_env, delete_lock`
 
 Undeploys cloudformation stack(removes all resources) for a selected amplify environment. To prevent accidental deletion, you are required to explicitly set [delete_lock](#delete_lock) input parameter with `false`. For the same reason, this step will fail if you try running it on the enivonment with name containing `prod/release/master`. 
@@ -221,3 +221,69 @@ a build command to run with amplify publish (to build front-end deployment artif
 **default**: true
 
 deletion protection: explicitly set this to false if you want `delete_env` step to work.
+
+## Advanced Examples
+
+### Replicating environment for integration tests
+
+You may soon find the need of running fully-fledged tests that would test the actual API calls and other functionality available in your infrustructure rather their mocked counterparts. This is achieved in the next example by means of populating the new amplify environment, running all the necessary tests and undeploying amplify environment back. PR branch name is used for environment name. Please note that subsequent commits to PR branch may fail with `resource already exist` if your amplify category resources use [DeletionPolicy](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html) in its CF templates that is set to `Retain`.
+
+```yaml
+name: 'Integration Tests'
+on: [pull_request]
+
+jobs:
+  test:
+    name: test amplify-cli-action
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: use node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: set amplify env name
+      id: setenvname
+      run: |
+        # use GITHUB_HEAD_REF that is set to PR source branch
+        # also remove -_ from branch name and limit kength to 10 for amplify env restriction
+        echo "##[set-output name=amplifyenvname;]$(echo ${GITHUB_HEAD_REF//[-_]/} | cut -c-10)"
+    - name: deploy test environment
+      uses: ambientlight/amplify-cli-action@master
+      with:
+        amplify_command: add_env
+        amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
+        amplify_cli_version: '3.17.1-alpha.35'
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: us-east-1
+
+    - name: install, build and run integration tests
+      run: |
+        # build and test
+        # npm install
+        # npm run build
+        # npm run test
+    
+    - name: undeploy test environment
+      uses: ambientlight/amplify-cli-action@master
+      # run even if previous step fails
+      if: ${{ failure() || success() }}
+      with:
+        amplify_command: delete_env
+        amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
+        amplify_cli_version: '3.17.1-alpha.35'
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: us-east-1
+    
+```
