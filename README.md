@@ -148,11 +148,16 @@ Configures amplify and initializes selected environment.
 
 #### push
 
-Perform cloudformation deployment of your latest amplify updates. You are required to run this step with `configure` command prior to running this. **Note:** this won't additionally build and deploy your front-end artifacts. Use [publish](#publish) for this.
+Perform cloudformation deployment of your latest amplify updates. You are required to run this step with `configure` command prior to running this. 
+
+**Note #0:** this won't additionally build and deploy your front-end artifacts. Use [publish](#publish) for this.  
+**Note #1:** don't forget to run `amplify env pull` locally to synchronize the stacks status aftwards
 
 #### publish
 
 Perform cloudformation deployment of your latest amplify updates as well as front-end artifacts if hosting category is used in your project. You are required to run this step with `configure` command prior to running this.
+
+**Note:** don't forget to run `amplify env pull` locally to synchronize the stacks status aftwards
 
 #### status
 
