@@ -150,7 +150,7 @@ I would personally discourage using `AdministratorAccess` IAM policy or root acc
 #### configure
 **required parameters**: `amplify_env`
 
-Configures amplify and initializes selected environment.
+Configures amplify and initializes specified amplify environment, which is required to exist prior to running this command.
 
 #### push
 
