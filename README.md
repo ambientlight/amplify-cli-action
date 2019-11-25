@@ -202,7 +202,7 @@ the root amplify project directory (contains `/amplify`): use it if you amplify 
 front-end source location where `aws_exports.js` will be generated
 
 ### distribution_dir
-**type**: `string` 
+**type**: `string`  
 **required**: `NO`  
 **default**: **dist**
 
