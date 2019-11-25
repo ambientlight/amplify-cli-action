@@ -1,9 +1,9 @@
 # amplify-cli-action
 
-![RELEASE](https://img.shields.io/github/v/release/ambientlight/amplify-cli-action?include_prereleases)
+[![RELEASE](https://img.shields.io/github/v/release/ambientlight/amplify-cli-action?include_prereleases)](https://github.com/ambientlight/amplify-cli-action/releases)
 [![View Action](https://img.shields.io/badge/view-action-blue.svg?logo=github&color=orange)](https://github.com/marketplace/actions/amplify-cli-action)
-![LICENSE](https://img.shields.io/github/license/ambientlight/amplify-cli-action)
-![ISSUES](https://img.shields.io/github/issues/ambientlight/amplify-cli-action)
+[![LICENSE](https://img.shields.io/github/license/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/blob/master/LICENSE)
+[![ISSUES](https://img.shields.io/github/issues/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/issues)
 
 🚀 :octocat: AWS Amplify CLI support for github actions. This action supports configuring and deploying your project to AWS as well as creating and undeploying amplify environments.
 
