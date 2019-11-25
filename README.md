@@ -259,7 +259,7 @@ jobs:
       id: setenvname
       run: |
         # use GITHUB_HEAD_REF that is set to PR source branch
-        # also remove -_ from branch name and limit kength to 10 for amplify env restriction
+        # also remove -_ from branch name and limit length to 10 for amplify env restriction
         echo "##[set-output name=amplifyenvname;]$(echo ${GITHUB_HEAD_REF//[-_]/} | cut -c-10)"
     - name: deploy test environment
       uses: ambientlight/amplify-cli-action@v0
