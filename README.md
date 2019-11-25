@@ -26,7 +26,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: configure amplify
-      uses: ambientlight/amplify-cli-action@v0
+      uses: ambientlight/amplify-cli-action@v0.1.1
       with:
         amplify_command: configure
         amplify_env: prod
@@ -43,7 +43,7 @@ jobs:
         # npm run test
     
     - name: deploy
-      uses: ambientlight/amplify-cli-action@v0
+      uses: ambientlight/amplify-cli-action@v0.1.1
       with:
         amplify_command: publish
         amplify_env: prod
@@ -262,7 +262,7 @@ jobs:
         # also remove -_ from branch name and limit length to 10 for amplify env restriction
         echo "##[set-output name=amplifyenvname;]$(echo ${GITHUB_HEAD_REF//[-_]/} | cut -c-10)"
     - name: deploy test environment
-      uses: ambientlight/amplify-cli-action@v0
+      uses: ambientlight/amplify-cli-action@v0.1.1
       with:
         amplify_command: add_env
         amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
@@ -280,7 +280,7 @@ jobs:
         # npm run test
     
     - name: undeploy test environment
-      uses: ambientlight/amplify-cli-action@v0
+      uses: ambientlight/amplify-cli-action@v0.1.1
       # run even if previous step fails
       if: failure() || success()
       with:
