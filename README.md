@@ -2,7 +2,7 @@
 🚀 :octocat: AWS Amplify CLI support for github actions. This action supports configuring and deploying your project to AWS as well as creating and undeploying amplify environments.
 
 ## Getting Started
-You can include the action in your workflow as `actions/amplify-cli-action@v0`. Example (configuring amplify, building and deploying):
+You can include the action in your workflow as `actions/amplify-cli-action@v0.1.1`. Example (configuring amplify, building and deploying):
 
 ```yaml
 name: 'Amplify Deploy'
