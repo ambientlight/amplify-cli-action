@@ -161,7 +161,7 @@ Shows the state of local resources not yet pushed to the cloud (Create/Update/De
 #### add_env
 **required parameters**: `amplify_env`
 
-Creates and initialized a new amplify environment. You would likely need this if you want to create a full replica of production environment for running integration tests. **IMPORTANT**: make sure to always run this step together with [delete_env](#delete_env) command since this new environment won't be added to your project's configuration and you would need to manually delete the leftover cloudformation stack and S3 bucket otherwise.
+Creates and initialized a new amplify environment. You would likely need this if you want to create a full replica of production environment for running integration tests (Refer to [Replicating Environment for Integration Tests](#replicating-environment-for-integration-tests)). **IMPORTANT**: make sure to always run this step together with [delete_env](#delete_env) command since this new environment won't be added to your project's configuration and you would need to manually delete the leftover cloudformation stack and S3 bucket otherwise.
 
 **Note #0**: you need to specify custom `amplify_cli_version`: `3.17.1-alpha.35` that [fixes headless push](https://github.com/aws-amplify/amplify-cli/pull/2743) bug before `3.17.1` is released.  
 **Note #1**: **WILL FAIL** with `resource already exists` exception if you repeatedly populate the environment that you have undeployed previously **WHEN** you are using storage category in your project and its CF `AWS::S3::Bucket` resource has **Retain** `DeletionPolicy`, since `delete_env` step won't remove such S3 bucket.  
@@ -202,7 +202,7 @@ the root amplify project directory (contains `/amplify`): use it if you amplify 
 front-end source location where `aws_exports.js` will be generated
 
 ### distribution_dir
-**type**: `string`
+**type**: `string` 
 **required**: `NO`  
 **default**: **dist**
 
@@ -227,6 +227,7 @@ deletion protection: explicitly set this to false if you want `delete_env` step 
 ### Replicating environment for integration tests
 
 You may soon find the need of running fully-fledged tests that would test the actual API calls and other functionality available in your infrustructure rather their mocked counterparts. This is achieved in the next example by means of populating the new amplify environment, running all the necessary tests and undeploying amplify environment back. PR branch name is used for environment name. Please note that subsequent commits to PR branch may fail with `resource already exist` if your amplify category resources use [DeletionPolicy](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-attribute-deletionpolicy.html) in its CF templates that is set to `Retain`.
+Also note, each deployment results in leftover amplify environment S3 bucket (named `amplify-{PROJECT_NAME}-{ENV_NAME}-{ID}-deployment`) since `amplify env delete` won't remove this S3 bucket. (this will not affect repeated population of the environment with the same name as new population will create S3 bucket with different name)  
 
 ```yaml
 name: 'Integration Tests'
@@ -276,14 +277,17 @@ jobs:
     - name: undeploy test environment
       uses: ambientlight/amplify-cli-action@master
       # run even if previous step fails
-      if: ${{ failure() || success() }}
+      if: failure() || success()
       with:
         amplify_command: delete_env
         amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
         amplify_cli_version: '3.17.1-alpha.35'
+        delete_lock: false
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: us-east-1
     
 ```
+
+As an alternative, one practical way could be to have a fixed sandbox environment that all PRs will update regardless of the branch (and doesn't get undeployed), so it can be used as a playground to manually test and play around with upcoming updates, but kind in mind there can be potential additional costs involved as some AWS resources used in amplify have fixed by-hours costs (kinesis for example).
