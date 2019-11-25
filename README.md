@@ -262,7 +262,7 @@ jobs:
         # also remove -_ from branch name and limit kength to 10 for amplify env restriction
         echo "##[set-output name=amplifyenvname;]$(echo ${GITHUB_HEAD_REF//[-_]/} | cut -c-10)"
     - name: deploy test environment
-      uses: ambientlight/amplify-cli-action@master
+      uses: ambientlight/amplify-cli-action@v0
       with:
         amplify_command: add_env
         amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
@@ -280,7 +280,7 @@ jobs:
         # npm run test
     
     - name: undeploy test environment
-      uses: ambientlight/amplify-cli-action@master
+      uses: ambientlight/amplify-cli-action@v0
       # run even if previous step fails
       if: failure() || success()
       with:
