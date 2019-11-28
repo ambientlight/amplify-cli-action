@@ -199,27 +199,6 @@ Use custom amplify version instead of latest stable (npm's `@latest`) when param
 
 the root amplify project directory (contains `/amplify`): use it if you amplify project is not this repo root directory.
 
-### source_dir
-**type**: `string`  
-**required**: `NO`  
-**default**: **src**
-
-front-end source location where `aws_exports.js` will be generated
-
-### distribution_dir
-**type**: `string`  
-**required**: `NO`  
-**default**: **dist**
-
-front-end artifacts deployment directory that gets uploaded to S3 during amplify publish if hosting category is used in the project
-
-### build_command
-**type**: `string`  
-**required**: `NO`  
-**default**: `npm run build`
-
-a build command to run with amplify publish (to build front-end deployment artifacts)
-
 ### delete_lock
 **type**: `bool`  
 **required** `YES` for `delete_env` amplify_command  
