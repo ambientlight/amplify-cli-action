@@ -1,8 +1,14 @@
-## amplify-cli-action
+# amplify-cli-action
+
+[![RELEASE](https://img.shields.io/github/v/release/ambientlight/amplify-cli-action?include_prereleases)](https://github.com/ambientlight/amplify-cli-action/releases)
+[![View Action](https://img.shields.io/badge/view-action-blue.svg?logo=github&color=orange)](https://github.com/marketplace/actions/amplify-cli-action)
+[![LICENSE](https://img.shields.io/github/license/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/blob/master/LICENSE)
+[![ISSUES](https://img.shields.io/github/issues/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/issues)
+
 🚀 :octocat: AWS Amplify CLI support for github actions. This action supports configuring and deploying your project to AWS as well as creating and undeploying amplify environments.
 
 ## Getting Started
-You can include the action in your workflow as `actions/amplify-cli-action@v0`. Example (configuring amplify, building and deploying):
+You can include the action in your workflow as `actions/amplify-cli-action@v0.1.1`. Example (configuring amplify, building and deploying):
 
 ```yaml
 name: 'Amplify Deploy'
@@ -26,7 +32,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: configure amplify
-      uses: ambientlight/amplify-cli-action@v0
+      uses: ambientlight/amplify-cli-action@v0.1.1
       with:
         amplify_command: configure
         amplify_env: prod
@@ -43,10 +49,11 @@ jobs:
         # npm run test
     
     - name: deploy
-      uses: ambientlight/amplify-cli-action@v0
+      uses: ambientlight/amplify-cli-action@v0.1.1
       with:
         amplify_command: publish
         amplify_env: prod
+        build_command: 'npm run build'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -127,7 +134,7 @@ I would personally discourage using `AdministratorAccess` IAM policy or root acc
   }
   ```
 
-  The first 3 policy statement blocks contain neccessary IAM permissions for Amplify CloudFormation deployments to work, while the last one contains permissions corresponding to AWS resources that are commonly used in Amplify (as an example): `auth`, `api`, `hosting`, `storage`, `function`. You will most likely **NEED TO ADD** more permissions corresponding to other resources used in your project. You may further constraint it down to specific service actions, but this can be a bit annoying as it is not clear and obvious what permissions(wan't able to find cloudformation docs that list permissions needed to create/update/remove resources for given service) you will need for a given amplify category resource, most likely you will find yourself iteratively deploying while tweaking IAM permissions until deployment succeeds.
+  The first 3 policy statement blocks contain neccessary IAM permissions for Amplify CloudFormation deployments to work, while the last one contains permissions corresponding to AWS resources that are commonly used in Amplify (as an example): `auth`, `api`, `hosting`, `storage`, `function`. You will most likely **NEED TO ADD** more permissions corresponding to other resources used in your project. You may further constraint it down to specific service actions, but this can be a bit annoying as it is not clear and obvious what permissions(wasn't able to find cloudformation docs that list permissions needed to create/update/remove resources for given service) you will need for a given amplify category resource, most likely you will find yourself iteratively deploying while tweaking IAM permissions until deployment succeeds.
 
 5. In the previous page group creation dropdown, find a newly created policy in the list, add a name (`AmplifyDeploy`) and click on Create Group.
 6. Select a newly created group for this new user, click through the other steps and finish creating a new user.
@@ -144,7 +151,7 @@ I would personally discourage using `AdministratorAccess` IAM policy or root acc
 #### configure
 **required parameters**: `amplify_env`
 
-Configures amplify and initializes selected environment.
+Configures amplify and initializes specified amplify environment, which is required to exist prior to running this command.
 
 #### push
 
@@ -181,19 +188,19 @@ Undeploys cloudformation stack(removes all resources) for a selected amplify env
 **Note #1**: repeated population of environment with the same name **WILL FAIL** with `resource already exists` exception if you repeatedly populate the environment that you have undeployed previously **WHEN** you are using storage category in your project and its CF `AWS::S3::Bucket` resource has **Retain** `DeletionPolicy`, since `delete_env` step won't remove such S3 bucket.  
 **Note #2**: may take significant time if you are utilizing `AWS CloudFront` in your hosting category.
 
-### amplify_env
+#### amplify_env
 **type**: `string`  
 **required**: `YES` for amplify_commands: `configure, add_env, delete_env`.
 
 Name of amplify environment used in this step.
 
-### amplify_cli_version
+#### amplify_cli_version
 **type**: `string`  
 **required** `NO`
 
 Use custom amplify version instead of latest stable (npm's `@latest`) when parameter is not specified.
 
-### project_dir
+#### project_dir
 **type**: `string`  
 **required**: `NO`
 
@@ -238,10 +245,10 @@ jobs:
       id: setenvname
       run: |
         # use GITHUB_HEAD_REF that is set to PR source branch
-        # also remove -_ from branch name and limit kength to 10 for amplify env restriction
+        # also remove -_ from branch name and limit length to 10 for amplify env restriction
         echo "##[set-output name=amplifyenvname;]$(echo ${GITHUB_HEAD_REF//[-_]/} | cut -c-10)"
     - name: deploy test environment
-      uses: ambientlight/amplify-cli-action@master
+      uses: ambientlight/amplify-cli-action@v0.1.1
       with:
         amplify_command: add_env
         amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
@@ -259,7 +266,7 @@ jobs:
         # npm run test
     
     - name: undeploy test environment
-      uses: ambientlight/amplify-cli-action@master
+      uses: ambientlight/amplify-cli-action@v0.1.1
       # run even if previous step fails
       if: failure() || success()
       with:
