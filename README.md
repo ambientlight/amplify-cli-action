@@ -32,7 +32,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: configure amplify
-      uses: ambientlight/amplify-cli-action@v0.2.0
+      uses: ambientlight/amplify-cli-action@0.2.0
       with:
         amplify_command: configure
         amplify_env: prod
@@ -49,7 +49,7 @@ jobs:
         # npm run test
     
     - name: deploy
-      uses: ambientlight/amplify-cli-action@v0.2.0
+      uses: ambientlight/amplify-cli-action@0.2.0
       with:
         amplify_command: publish
         amplify_env: prod
