@@ -47,15 +47,15 @@ echo "amplify version $(amplify --version)"
 case $5 in
 
   push)
-    amplify push --yes
+    amplify push $9 --yes
     ;;
 
   publish)
-    amplify publish --yes
+    amplify publish $9 --yes
     ;;
 
   status)
-    amplify status
+    amplify status $9
     ;;
 
   configure)
@@ -92,7 +92,7 @@ case $5 in
     # this is required in addition to configure project for env to work
     echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"'$6'"}' > ./amplify/.config/local-env-info.json
 
-    amplify configure project --amplify "$AMPLIFY" --frontend "$FRONTEND" --providers "$PROVIDERS" --yes
+    amplify configure project $9 --amplify "$AMPLIFY" --frontend "$FRONTEND" --providers "$PROVIDERS" --yes
 
     # if environment doesn't exist create a new one
     if [ -z "$(amplify env get --name $6 | grep 'No environment found')" ] ; then  
@@ -123,7 +123,7 @@ case $5 in
     \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
     }"
 
-    amplify env add --amplify "$AMPLIFY" --providers "$PROVIDERS" --yes
+    amplify env add $9 --amplify "$AMPLIFY" --providers "$PROVIDERS" --yes
     amplify status
     ;;
 
@@ -143,7 +143,7 @@ case $5 in
     # fill in dummy env in local-env-info so we delete current environment
     # without switch to another one (amplify restriction) 
     echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"dummyenvfordeletecurrentowork"}' > ./amplify/.config/local-env-info.json
-    echo "Y" | amplify env remove "$6"
+    echo "Y" | amplify env remove "$6" $9
     ;;
 
   *)
