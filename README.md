@@ -214,7 +214,7 @@ the root amplify project directory (contains `/amplify`): use it if you amplify 
 deletion protection: explicitly set this to false if you want `delete_env` step to work.
 
 ### amplify_arguments
-**type**: `bool`  
+**type**: `string`  
 **required** `NO`
 
 additional arguments to pass to ampify_command's defined command
