@@ -30,7 +30,7 @@ inputs:
     required: false
     default: true
   amplify_arguments:
-    description: 'additional arguments to pass to ampify_command's defined command'
+    description: 'additional arguments to pass to ampify_command defined command'
     required: false
     default: ''
 runs:
