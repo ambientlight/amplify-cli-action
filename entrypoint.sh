@@ -59,45 +59,12 @@ case $5 in
     ;;
 
   configure)
-    FRONTENDCONFIG="{\
-    \"SourceDir\":\"$2\",\
-    \"DistributionDir\":\"$3\",\
-    \"BuildCommand\":\"$4\",\
-    \"StartCommand\":\"npm run-script start\"\
-    }"
-
-    AWSCLOUDFORMATIONCONFIG="{\
-    \"configLevel\":\"project\",\
-    \"useProfile\":false,\
-    \"accessKeyId\":\"$AWS_ACCESS_KEY_ID\",\
-    \"secretAccessKey\":\"$AWS_SECRET_ACCESS_KEY\",\
-    \"region\":\"$AWS_REGION\"\
-    }"
-
-    AMPLIFY="{\
-    \"projectName\":\"github actions CI\",\
-    \"defaultEditor\":\"code\"\
-    }"
-
-    FRONTEND="{\
-    \"frontend\":\"javascript\",\
-    \"framework\":\"none\",\
-    \"config\":$FRONTENDCONFIG\
-    }"
-
-    PROVIDERS="{\
-    \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
-    }"
-
-    # this is required in addition to configure project for env to work
     echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"'$6'"}' > ./amplify/.config/local-env-info.json
 
-    amplify configure project $9 --amplify "$AMPLIFY" --frontend "$FRONTEND" --providers "$PROVIDERS" --yes
-
-    # if environment doesn't exist create a new one
+    # if environment doesn't exist fail explicitly
     if [ -z "$(amplify env get --name $6 | grep 'No environment found')" ] ; then  
       echo "found existing environment $6"
-      amplify env pull --yes
+      amplify env pull --yes $9
     else
       echo "$6 environment does not exist, consider using add_env command instead";
       exit 1
