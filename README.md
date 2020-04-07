@@ -141,7 +141,7 @@ I would personally discourage using `AdministratorAccess` IAM policy or root acc
 7. Copy the access key and secret access key into your github repository Secrets (in repo's Settings) as **AWS_ACCESS_KEY_ID**,  **AWS_SECRET_ACCESS_KEY**.
 8. You can also learn more at [Controlling Access with AWS Identity and Access Management](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-iam-template.html)
 
-## Commands
+## Inputs
 
 ### amplify_command
 
