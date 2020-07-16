@@ -53,7 +53,6 @@ jobs:
       with:
         amplify_command: publish
         amplify_env: prod
-        build_command: 'npm run build'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
