@@ -64,7 +64,7 @@ case $5 in
     # if environment doesn't exist fail explicitly
     if [ -z "$(amplify env get --name $6 | grep 'No environment found')" ] ; then  
       echo "found existing environment $6"
-      amplify env pull --yes $9
+      amplify env pull --restore --yes $9
     else
       echo "$6 environment does not exist, consider using add_env command instead";
       exit 1
