@@ -27,7 +27,7 @@ if [ -n "$1" ] ; then
   cd "$1"
 fi
 
-# if amplify if available at path and custom amplify version is unspecified, do nothing, 
+# if amplify if available at path and custom amplify version is unspecified, do nothing,
 # otherwise install globally latest npm version
 # FIXME: weird: using local dep amplify-cli bugs with awscloudformation provider: with using provider underfined
 if [ -z $(which amplify) ] || [ -n "$8" ] ; then
@@ -36,7 +36,7 @@ if [ -z $(which amplify) ] || [ -n "$8" ] ; then
 # elif [ ! -f ./node_modules/.bin/amplify ] ; then
 else
   echo "using amplify available at PATH"
-# else 
+# else
 #   echo "using local project dependency amplify"
 #   PATH="$PATH:$(pwd)/node_modules/.bin"
 fi
@@ -59,17 +59,22 @@ case $5 in
     ;;
 
   configure)
+    aws_config_file_path="$(pwd)/aws_config_file_path.json"
+    echo '{"accessKeyId":"'$AWS_ACCESS_KEY_ID'","secretAccessKey":"'$AWS_SECRET_ACCESS_KEY'","region":"'$AWS_REGION'"}' > $aws_config_file_path
     echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"'$6'"}' > ./amplify/.config/local-env-info.json
+    echo '{"'$6'":{"configLevel":"project","useProfile":false,"awsConfigFilePath":"'$aws_config_file_path'"}}' > ./amplify/.config/local-aws-info.json
+
+
 
     # if environment doesn't exist fail explicitly
-    if [ -z "$(amplify env get --name $6 | grep 'No environment found')" ] ; then  
+    if [ -z "$(amplify env get --name $6 | grep 'No environment found')" ] ; then
       echo "found existing environment $6"
       amplify env pull --yes $9
     else
       echo "$6 environment does not exist, consider using add_env command instead";
       exit 1
     fi
-    
+
     amplify status
     ;;
 
@@ -108,7 +113,7 @@ case $5 in
     fi
 
     # fill in dummy env in local-env-info so we delete current environment
-    # without switch to another one (amplify restriction) 
+    # without switch to another one (amplify restriction)
     echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"dummyenvfordeletecurrentowork"}' > ./amplify/.config/local-env-info.json
     echo "Y" | amplify env remove "$6" $9
     ;;
