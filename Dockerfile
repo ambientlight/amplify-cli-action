@@ -8,6 +8,8 @@ LABEL "com.github.actions.color"="orange"
 LABEL "repository"="https://github.com/ambientlight/amplify-cli-action"
 LABEL "homepage"="https://github.com/ambientlight/amplify-cli-action.git"
 
+LABEL org.opencontainers.image.source=https://github.com/ambientlight/amplify-cli-action
+
 RUN npm install --global --unsafe-perm @aws-amplify/cli@latest
 
 COPY entrypoint.sh /entrypoint.sh

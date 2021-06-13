@@ -287,3 +287,19 @@ jobs:
 ```
 
 As an alternative, one practical way could be to have a fixed sandbox environment that all PRs will update regardless of the branch (and doesn't get undeployed), so it can be used as a playground to manually test and play around with upcoming updates, but kind in mind there can be potential additional costs involved as some AWS resources used in amplify have fixed by-hours costs (kinesis for example).
+
+
+## Development
+
+How to roll out a new image
+
+``` bash
+VERSION=0.3.0
+
+docker build -t amplify-cli-action:$VERSION .
+
+docker tag amplify-cli-action:$VERSION ghcr.io/ambientlight/amplify-cli-action/amplify-cli-action:$VERSION
+
+docker push ghcr.io/ambientlight/amplify-cli-action/amplify-cli-action:$VERSION
+
+```
