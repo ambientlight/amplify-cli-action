@@ -20,7 +20,7 @@ inputs:
     description: 'amplify environment to use'
     required: true
   amplify_command:
-    description: 'amplify command: SUPPORTED: [configure, push, publish, status, add_env, delete_env]'
+    description: 'amplify command: SUPPORTED: [configure, push, publish, status, add_env, delete_env, compile_api]'
     required: true
   amplify_cli_version:
     description: 'version of amplify/cli used'

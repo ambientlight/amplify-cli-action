@@ -145,7 +145,7 @@ I would personally discourage using `AdministratorAccess` IAM policy or root acc
 ### amplify_command
 
 **type**: `string`  
-**values**: `configure | push | publish | status | add_env | delete_env`
+**values**: `configure | push | publish | status | add_env | delete_env | compile_api`
 
 #### configure
 **required parameters**: `amplify_env`
@@ -186,6 +186,10 @@ Undeploys cloudformation stack(removes all resources) for a selected amplify env
 **Note #0**: results in leftover amplify environment S3 bucket since `amplify env delete` won't remove this S3 bucket. (this will not affect repeated population of the environment with the same name as new population will create S3 bucket with different name)  
 **Note #1**: repeated population of environment with the same name **WILL FAIL** with `resource already exists` exception if you repeatedly populate the environment that you have undeployed previously **WHEN** you are using storage category in your project and its CF `AWS::S3::Bucket` resource has **Retain** `DeletionPolicy`, since `delete_env` step won't remove such S3 bucket.  
 **Note #2**: may take significant time if you are utilizing `AWS CloudFront` in your hosting category.
+
+#### compile_api
+
+Compiles your `backend/api/~apiname~/schema.graphql` file to `backend/api/~apiname~/build/schema.graphql`. This is run by default when you run `amplify push` command, but it can be useful to run it separately if you want to build your API schema before pushing to the cloud.
 
 ### amplify_env
 **type**: `string`  
