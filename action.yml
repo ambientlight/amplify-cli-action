@@ -35,7 +35,7 @@ inputs:
     default: ''
 runs:
   using: 'docker'
-  image: 'docker://hub.docker.com/r/consensusnetworks/amplify-action:0.3.1'
+  image: 'docker://hub.docker.com/r/consensusnetworks/amplify-action:latest'
   args:
     - ${{ inputs.project_dir }}
     - ${{ inputs.source_dir }}

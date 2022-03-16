@@ -6,7 +6,7 @@
 This action supports configuring and deploying your project to AWS as well as creating and undeploying amplify environments :octocat:.
 
 ## Getting Started
-You can include the action in your workflow as `actions/amplify-action@0.3.1`. Example (configuring amplify, building and deploying):
+You can include the action in your workflow as `actions/amplify-action@v0.3.1`. Example (configuring amplify, building and deploying):
 
 ```yaml
 name: 'Amplify Deploy'
@@ -30,7 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: configure amplify
-      uses: consensusnetworks/amplify-action@0.3.1
+      uses: consensusnetworks/amplify-action@v0.3.1
       with:
         amplify_command: configure
         amplify_env: prod
@@ -47,7 +47,7 @@ jobs:
         # npm run test
     
     - name: deploy
-      uses: consensusnetworks/amplify-action@0.3.1
+      uses: consensusnetworks/amplify-action@v0.3.1
       with:
         amplify_command: publish
         amplify_env: prod
@@ -255,7 +255,7 @@ jobs:
         # also remove -_ from branch name and limit length to 10 for amplify env restriction
         echo "##[set-output name=amplifyenvname;]$(echo ${GITHUB_HEAD_REF//[-_]/} | cut -c-10)"
     - name: deploy test environment
-      uses: consensusnetworks/amplify-action@0.3.1
+      uses: consensusnetworks/amplify-action@v0.3.1
       with:
         amplify_command: add_env
         amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
@@ -273,7 +273,7 @@ jobs:
         # npm run test
     
     - name: undeploy test environment
-      uses: consensusnetworks/amplify-action@0.3.1
+      uses: consensusnetworks/amplify-action@v0.3.1
       # run even if previous step fails
       if: failure() || success()
       with:
@@ -296,12 +296,9 @@ As an alternative, one practical way could be to have a fixed sandbox environmen
 How to roll out a new image
 
 ``` bash
-VERSION=0.3.1
+VERSION=latest
 
-docker build -t amplify-action:$VERSION .
+docker build -t consensusnetworks/amplify-action/:$VERSION .
 
-docker tag amplify-action:$VERSION ghcr.io/consensusnetworks/amplify-action/amplify-action:$VERSION
-
-docker push ghcr.io/consensusnetworks/amplify-action/amplify-action:$VERSION
-
+docker push consensusnetworks/amplify-action:$VERSION
 ```
