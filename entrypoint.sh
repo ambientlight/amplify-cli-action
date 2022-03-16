@@ -68,7 +68,7 @@ case $5 in
     echo '{"projectPath": "'"$(pwd)"'","defaultEditor":"code","envName":"'$6'"}' > ./amplify/.config/local-env-info.json
     echo '{"'$6'":{"configLevel":"project","useProfile":false,"awsConfigFilePath":"'$aws_config_file_path'"}}' > ./amplify/.config/local-aws-info.json
 
-
+    echo "Set up files for amplify"
 
     # if environment doesn't exist fail explicitly
     if [ -z "$(amplify env get --name $6 | grep 'No environment found')" ] ; then
@@ -79,7 +79,12 @@ case $5 in
       exit 1
     fi
 
+    echo "Completed environment setup"
+
     amplify status
+
+    echo "Got status"
+
     ;;
 
   add_env)
