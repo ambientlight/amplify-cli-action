@@ -1,14 +1,9 @@
-# amplify-cli-action
-
-[![RELEASE](https://img.shields.io/github/v/release/ambientlight/amplify-cli-action?include_prereleases)](https://github.com/ambientlight/amplify-cli-action/releases)
-[![View Action](https://img.shields.io/badge/view-action-blue.svg?logo=github&color=orange)](https://github.com/marketplace/actions/amplify-cli-action)
-[![LICENSE](https://img.shields.io/github/license/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/blob/master/LICENSE)
-[![ISSUES](https://img.shields.io/github/issues/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/issues)
+# Amplify Action
 
 🚀 :octocat: AWS Amplify CLI support for github actions. This action supports configuring and deploying your project to AWS as well as creating and undeploying amplify environments.
 
 ## Getting Started
-You can include the action in your workflow as `actions/amplify-cli-action@0.3.0`. Example (configuring amplify, building and deploying):
+You can include the action in your workflow as `actions/amplify-action@0.3.1`. Example (configuring amplify, building and deploying):
 
 ```yaml
 name: 'Amplify Deploy'
@@ -16,7 +11,7 @@ on: [push]
 
 jobs:
   test:
-    name: test amplify-cli-action
+    name: test amplify-action
     runs-on: ubuntu-latest
 
     strategy:
@@ -32,7 +27,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: configure amplify
-      uses: ambientlight/amplify-cli-action@0.3.0
+      uses: consensusnetworks/amplify-action@0.3.1
       with:
         amplify_command: configure
         amplify_env: prod
@@ -49,7 +44,7 @@ jobs:
         # npm run test
     
     - name: deploy
-      uses: ambientlight/amplify-cli-action@0.3.0
+      uses: consensusnetworks/amplify-action@0.3.1
       with:
         amplify_command: publish
         amplify_env: prod
@@ -298,12 +293,12 @@ As an alternative, one practical way could be to have a fixed sandbox environmen
 How to roll out a new image
 
 ``` bash
-VERSION=0.3.0
+VERSION=0.3.1
 
-docker build -t amplify-cli-action:$VERSION .
+docker build -t amplify-action:$VERSION .
 
-docker tag amplify-cli-action:$VERSION ghcr.io/ambientlight/amplify-cli-action/amplify-cli-action:$VERSION
+docker tag amplify-action:$VERSION ghcr.io/consensusnetworks/amplify-action/amplify-action:$VERSION
 
-docker push ghcr.io/ambientlight/amplify-cli-action/amplify-cli-action:$VERSION
+docker push ghcr.io/consensusnetworks/amplify-action/amplify-action:$VERSION
 
 ```
