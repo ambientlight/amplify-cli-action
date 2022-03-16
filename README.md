@@ -16,13 +16,13 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: use node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
 
@@ -230,18 +230,18 @@ on: [pull_request]
 
 jobs:
   test:
-    name: test amplify-cli-action
+    name: test amplify-action
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: use node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
 
@@ -252,11 +252,11 @@ jobs:
         # also remove -_ from branch name and limit length to 10 for amplify env restriction
         echo "##[set-output name=amplifyenvname;]$(echo ${GITHUB_HEAD_REF//[-_]/} | cut -c-10)"
     - name: deploy test environment
-      uses: ambientlight/amplify-cli-action@0.3.0
+      uses: consensusnetworks/amplify-action@0.3.1
       with:
         amplify_command: add_env
         amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
-        amplify_cli_version: '3.17.1-alpha.35'
+        amplify_cli_version: '7.6.15'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -270,13 +270,13 @@ jobs:
         # npm run test
     
     - name: undeploy test environment
-      uses: ambientlight/amplify-cli-action@0.3.0
+      uses: consensusnetworks/amplify-action@0.3.1
       # run even if previous step fails
       if: failure() || success()
       with:
         amplify_command: delete_env
         amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
-        amplify_cli_version: '3.17.1-alpha.35'
+        amplify_cli_version: '7.6.15'
         delete_lock: false
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
