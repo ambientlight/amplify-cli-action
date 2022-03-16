@@ -5,10 +5,10 @@ LABEL "com.github.actions.description"="This action builds and deploys your AWS 
 LABEL "com.github.actions.icon"="git-commit"
 LABEL "com.github.actions.color"="orange"
 
-LABEL "repository"="https://github.com/consensusnetworks/amplify-cli-action"
-LABEL "homepage"="https://github.com/consensusnetworks/amplify-cli-action.git"
+LABEL "repository"="https://github.com/consensusnetworks/amplify-action"
+LABEL "homepage"="https://github.com/consensusnetworks/amplify-action.git"
 
-LABEL org.opencontainers.image.source=https://github.com/consensusnetworks/amplify-cli-action
+LABEL org.opencontainers.image.source=https://github.com/consensusnetworks/amplify-action
 
 RUN npm install --global --unsafe-perm @aws-amplify/cli@latest
 
