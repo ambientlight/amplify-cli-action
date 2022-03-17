@@ -1,14 +1,12 @@
-# amplify-cli-action
+# Amplify Action
 
-[![RELEASE](https://img.shields.io/github/v/release/ambientlight/amplify-cli-action?include_prereleases)](https://github.com/ambientlight/amplify-cli-action/releases)
-[![View Action](https://img.shields.io/badge/view-action-blue.svg?logo=github&color=orange)](https://github.com/marketplace/actions/amplify-cli-action)
-[![LICENSE](https://img.shields.io/github/license/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/blob/master/LICENSE)
-[![ISSUES](https://img.shields.io/github/issues/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/issues)
+🚀 AWS Amplify CLI support for github actions 
 
-🚀 :octocat: AWS Amplify CLI support for github actions. This action supports configuring and deploying your project to AWS as well as creating and undeploying amplify environments.
+## About
+This action supports configuring and deploying your project to AWS as well as creating and undeploying amplify environments :octocat:.
 
 ## Getting Started
-You can include the action in your workflow as `actions/amplify-cli-action@0.3.0`. Example (configuring amplify, building and deploying):
+You can include the action in your workflow as `actions/amplify-action@v0.3.1`. Example (configuring amplify, building and deploying):
 
 ```yaml
 name: 'Amplify Deploy'
@@ -16,23 +14,23 @@ on: [push]
 
 jobs:
   test:
-    name: test amplify-cli-action
+    name: test amplify-action
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: use node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
 
     - name: configure amplify
-      uses: ambientlight/amplify-cli-action@0.3.0
+      uses: consensusnetworks/amplify-action@v0.3.1
       with:
         amplify_command: configure
         amplify_env: prod
@@ -49,7 +47,7 @@ jobs:
         # npm run test
     
     - name: deploy
-      uses: ambientlight/amplify-cli-action@0.3.0
+      uses: consensusnetworks/amplify-action@v0.3.1
       with:
         amplify_command: publish
         amplify_env: prod
@@ -145,7 +143,7 @@ I would personally discourage using `AdministratorAccess` IAM policy or root acc
 ### amplify_command
 
 **type**: `string`  
-**values**: `configure | push | publish | status | add_env | delete_env`
+**values**: `configure | push | publish | status | add_env | delete_env | compile_api`
 
 #### configure
 **required parameters**: `amplify_env`
@@ -186,6 +184,10 @@ Undeploys cloudformation stack(removes all resources) for a selected amplify env
 **Note #0**: results in leftover amplify environment S3 bucket since `amplify env delete` won't remove this S3 bucket. (this will not affect repeated population of the environment with the same name as new population will create S3 bucket with different name)  
 **Note #1**: repeated population of environment with the same name **WILL FAIL** with `resource already exists` exception if you repeatedly populate the environment that you have undeployed previously **WHEN** you are using storage category in your project and its CF `AWS::S3::Bucket` resource has **Retain** `DeletionPolicy`, since `delete_env` step won't remove such S3 bucket.  
 **Note #2**: may take significant time if you are utilizing `AWS CloudFront` in your hosting category.
+
+#### compile_api
+
+Compiles your `backend/api/~apiname~/schema.graphql` file to `backend/api/~apiname~/build/schema.graphql`. This is run by default when you run `amplify push` command, but it can be useful to run it separately if you want to build your API schema before pushing to the cloud.
 
 ### amplify_env
 **type**: `string`  
@@ -231,18 +233,18 @@ on: [pull_request]
 
 jobs:
   test:
-    name: test amplify-cli-action
+    name: test amplify-action
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: use node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
 
@@ -253,11 +255,11 @@ jobs:
         # also remove -_ from branch name and limit length to 10 for amplify env restriction
         echo "##[set-output name=amplifyenvname;]$(echo ${GITHUB_HEAD_REF//[-_]/} | cut -c-10)"
     - name: deploy test environment
-      uses: ambientlight/amplify-cli-action@0.3.0
+      uses: consensusnetworks/amplify-action@v0.3.1
       with:
         amplify_command: add_env
         amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
-        amplify_cli_version: '3.17.1-alpha.35'
+        amplify_cli_version: '7.6.15'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -271,13 +273,13 @@ jobs:
         # npm run test
     
     - name: undeploy test environment
-      uses: ambientlight/amplify-cli-action@0.3.0
+      uses: consensusnetworks/amplify-action@v0.3.1
       # run even if previous step fails
       if: failure() || success()
       with:
         amplify_command: delete_env
         amplify_env: ${{ steps.setenvname.outputs.amplifyenvname }}
-        amplify_cli_version: '3.17.1-alpha.35'
+        amplify_cli_version: '7.6.15'
         delete_lock: false
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -294,12 +296,9 @@ As an alternative, one practical way could be to have a fixed sandbox environmen
 How to roll out a new image
 
 ``` bash
-VERSION=0.3.0
+VERSION=latest
 
-docker build -t amplify-cli-action:$VERSION .
+docker build -t consensusnetworks/amplify-action/:$VERSION .
 
-docker tag amplify-cli-action:$VERSION ghcr.io/ambientlight/amplify-cli-action/amplify-cli-action:$VERSION
-
-docker push ghcr.io/ambientlight/amplify-cli-action/amplify-cli-action:$VERSION
-
+docker push consensusnetworks/amplify-action:$VERSION
 ```
