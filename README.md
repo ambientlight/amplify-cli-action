@@ -5,7 +5,8 @@
 [![LICENSE](https://img.shields.io/github/license/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/blob/master/LICENSE)
 [![ISSUES](https://img.shields.io/github/issues/ambientlight/amplify-cli-action)](https://github.com/ambientlight/amplify-cli-action/issues)
 
-No longer maintained. Feel free to send the PR to **README.md** and link folks to a maintained fork if such exist. 
+No longer maintained. Feel free to send the PR to **README.md** and link folks to a maintained fork if such exist.  
+  
 🚀 :octocat: AWS Amplify CLI support for github actions. This action supports configuring and deploying your project to AWS as well as creating and undeploying amplify environments.
 
 ## Getting Started
