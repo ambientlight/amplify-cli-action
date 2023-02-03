@@ -35,8 +35,6 @@ if [ -z $(which amplify) ] || [ -n "$8" ] ; then
   npm install -g @aws-amplify/cli@${8}
 # elif [ ! -f ./node_modules/.bin/amplify ] ; then
 else
-#  echo "using amplify available at PATH"
-else
   echo "using local project dependency amplify"
   PATH="$PATH:$(pwd)/node_modules/.bin"
 fi
